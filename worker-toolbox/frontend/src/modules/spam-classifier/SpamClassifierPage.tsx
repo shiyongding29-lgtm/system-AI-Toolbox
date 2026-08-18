@@ -35,7 +35,6 @@ export default function SpamClassifierPage() {
   return (
     <div>
       <Title level={3}><StopOutlined style={{ color: '#ef4444' }} /> 垃圾邮件检测 Spam Detector</Title>
-      <Tag color="red" style={{ borderRadius: 100 }}>ML 教学示例</Tag>
       <Text type="secondary" style={{ marginLeft: 8 }}>随机森林 · 关键词 + 长度等 34 个特征 · 5571 条短信</Text>
 
       {info?.error && <Alert type="error" style={{ marginTop: 16 }} showIcon message={info.error} />}

@@ -49,7 +49,6 @@ export default function DelayRiskPage() {
   return (
     <div>
       <Title level={3}><ClockCircleOutlined style={{ color: '#f97316' }} /> 项目延期风险检测 Delay Risk</Title>
-      <Tag color="orange" style={{ borderRadius: 100 }}>ML 教学示例</Tag>
       <Text type="secondary" style={{ marginLeft: 8 }}>XGBoost 梯度提升树 · 6 特征 · 600 条合成数据</Text>
 
       {info?.error && <Alert type="error" style={{ marginTop: 16 }} showIcon message={info.error} />}

@@ -44,7 +44,6 @@ export default function FruitClassifierPage() {
   return (
     <div>
       <Title level={3}><ExperimentOutlined style={{ color: '#22c55e' }} /> 水果识别 Fruit Classifier</Title>
-      <Tag color="green" style={{ borderRadius: 100 }}>ML 教学示例</Tag>
       <Text type="secondary" style={{ marginLeft: 8 }}>K-NN 最近邻分类 · 59 样本 · 4 类水果</Text>
 
       {info?.error && <Alert type="error" style={{ marginTop: 16 }} showIcon message={info.error} />}

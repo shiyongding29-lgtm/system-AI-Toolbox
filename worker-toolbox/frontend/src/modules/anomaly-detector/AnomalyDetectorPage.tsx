@@ -46,7 +46,6 @@ export default function AnomalyDetectorPage() {
   return (
     <div>
       <Title level={3}><RadarChartOutlined style={{ color: '#f59e0b' }} /> 异常员工识别 Anomaly Detection</Title>
-      <Tag color="orange" style={{ borderRadius: 100 }}>ML 教学示例 · 无监督学习</Tag>
       <Text type="secondary" style={{ marginLeft: 8 }}>K-Means 聚类 · PCA 降维可视化 · 离群检测 · 525 条合成数据</Text>
 
       {info?.error && <Alert type="error" style={{ marginTop: 16 }} showIcon message={info.error} />}

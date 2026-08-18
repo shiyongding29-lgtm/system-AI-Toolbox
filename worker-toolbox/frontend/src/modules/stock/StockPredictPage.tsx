@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Card, Input, Button, Typography, message, Statistic, Row, Col, Descriptions, Alert, Tag } from 'antd'
+import { Card, Input, Button, Typography, message, Statistic, Row, Col, Descriptions, Alert } from 'antd'
 import { LineChartOutlined } from '@ant-design/icons'
 import http from '../../services/http'
 
@@ -35,7 +35,6 @@ export default function StockPredictPage() {
   return (
     <div>
       <Title level={3}><LineChartOutlined style={{ color: '#f97316' }} /> 股票预测 Stock Predictor</Title>
-      <Tag color="orange" style={{ borderRadius: 100 }}>ML 教学示例</Tag>
       <Text type="secondary" style={{ marginLeft: 8 }}>sklearn 线性回归(收盘价) + 逻辑回归(涨跌方向)</Text>
 
       {info?.error && <Alert type="error" style={{ marginTop: 16 }} showIcon message={info.error} />}

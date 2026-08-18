@@ -43,7 +43,6 @@ export default function PriorityClassifierPage() {
   return (
     <div>
       <Title level={3}><AimOutlined style={{ color: '#8b5cf6' }} /> 任务优先级判断 Task Priority</Title>
-      <Tag color="purple" style={{ borderRadius: 100 }}>ML 教学示例</Tag>
       <Text type="secondary" style={{ marginLeft: 8 }}>决策树 · 可解释 if-then 规则 · 500 条合成数据</Text>
 
       {info?.error && <Alert type="error" style={{ marginTop: 16 }} showIcon message={info.error} />}
