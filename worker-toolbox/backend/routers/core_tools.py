@@ -211,16 +211,19 @@ def delay_risk_info():
 
 class AttritionRequest(BaseModel):
     tenure: float | None = None
-    monthly_salary: float | None = None
-    overtime_hours: float | None = None
+    salary: float | None = None
+    raise_pct: float | None = None
     performance: float | None = None
-    promotions: float | None = None
-    commute_minutes: float | None = None
+    overtime_hours: float | None = None
+    months_since_promotion: float | None = None
+    department: str | None = None
+    age: float | None = None
+    attendance_anomalies: float | None = None
 
 
 @router.post("/attrition-risk")
 def attrition_risk_api(req: AttritionRequest):
-    """SVM 员工离职风险预测。"""
+    """FCN 员工离职风险预测。"""
     from backend.services.attrition_service import predict
     feats = {k: v for k, v in req.model_dump().items() if v is not None}
     try:
