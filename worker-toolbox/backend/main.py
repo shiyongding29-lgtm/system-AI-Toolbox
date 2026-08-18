@@ -17,15 +17,17 @@ from backend.database import engine, Base
 def create_app() -> FastAPI:
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
-        """启动时创建数据库表。"""
+        """启动时创建数据库表 + 发现技能。"""
         Base.metadata.create_all(bind=engine)
         print("数据库表已创建。DB 就绪")
+        from backend.services.skill_registry import skill_registry
+        skill_registry.discover(force=True)
         yield
 
     app = FastAPI(
-        title="AI Toolbox API",
+        title="system-AI-Toolbox API",
         version="0.1.0",
-        description="AI Toolbox — AI-powered productivity tools",
+        description="system-AI-Toolbox — AI-powered productivity tools",
         lifespan=lifespan,
     )
 
@@ -76,6 +78,9 @@ def create_app() -> FastAPI:
     from backend.routers.web_scraper import router as scraper_router
     from backend.routers.qr_generator import router as qr_router
     from backend.routers.file_converter import router as converter_router
+    from backend.routers.agent import router as agent_router
+    from backend.routers.core_tools import router as core_tools_router
+    from backend.routers.skills import router as skills_router
 
     app.include_router(history_router)
     app.include_router(trans_router)
@@ -107,6 +112,9 @@ def create_app() -> FastAPI:
     app.include_router(scraper_router)
     app.include_router(qr_router)
     app.include_router(converter_router)
+    app.include_router(agent_router)
+    app.include_router(core_tools_router)
+    app.include_router(skills_router)
 
     return app
 

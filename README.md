@@ -1,6 +1,6 @@
-# AI Toolbox 智能工具箱
+# system-AI-Toolbox 智能工具箱
 
-一个集成 24 个 AI 工具 + 智能工作流编排 + 定时机器人的 AI Agent 平台。
+一个集成 24 个 AI 工具 + 智能工作流编排 + 无人值守定时智能体（Agentic Automation）的 AI Agent 平台。
 
 ## ✨ 核心特性
 
@@ -8,7 +8,7 @@
 |---|---|
 | 🤖 **AI Assistant** | 双模型意图识别，自动判断单工具/多步骤任务 |
 | 🔀 **智能工作流** | 自然语言自动生成工作流，DAG 画布拖拽编排 |
-| ⏰ **My Robot** | 定时自动执行工作流，支持 cron 调度 |
+| ⏰ **Scheduled Agent** | 无人值守定时智能体：按 cron 调度自动执行 AI 工作流 |
 | 🧠 **自训练模型** | 两个 PyTorch/DistilBERT 模型本地推理 |
 | 🎨 **科技风 UI** | 深色/浅色双主题，Apple Watch 气泡网格 |
 
@@ -21,13 +21,12 @@
 | 项目 | 值 |
 |---|---|
 | 架构 | `DistilBERT-base-multilingual-cased` |
-| 类别数 | 26 类（24 个工具 + 2 个辅助标签） |
-| 训练数据 | 513 条标注样本 |
-| 准确率 | 90.59% |
+| 类别数 | 35 类（工具标签 + chat 聊天类） |
+| 训练数据 | 713 条标注样本 |
 | 训练脚本 | `train_intent_classifier.py` |
 | 权重文件 | `models/intent_classifier/` |
 
-**作用**：判断用户想用哪个工具（meeting / translation / ppt / ...）。
+**作用**：判断用户想用哪个工具（meeting / translation / ppt / calculator / chat / ...）。
 
 ### 模型 2：多步骤检测器（Multi-Tool Detector）
 
@@ -35,12 +34,23 @@
 |---|---|
 | 架构 | `DistilBERT-base-multilingual-cased` |
 | 类别数 | 2 类（`single_tool` / `multi_tool`） |
-| 训练数据 | 385 条标注样本 |
-| 准确率 | 98.53% |
+| 训练数据 | 485 条标注样本 |
 | 训练脚本 | `train_multitool_classifier.py` |
 | 权重文件 | `models/multitool_classifier/` |
 
 **作用**：判断用户请求是单步骤还是需要多个工具协同。
+
+### 模型 3：情感分类器（Sentiment Classifier）
+
+| 项目 | 值 |
+|---|---|
+| 架构 | `DistilBERT-base-multilingual-cased` |
+| 类别数 | 3 类（`positive` / `negative` / `neutral`） |
+| 训练数据 | 300 条标注样本（training_data_sentiment.csv） |
+| 训练脚本 | `train_sentiment_classifier.py` |
+| 权重文件 | `models/sentiment_classifier/` |
+
+**作用**：情感分析工具的本地推理。训练前回退为未训练模型（输出不可靠）。
 
 ### 模型 3：DeepSeek LLM（云端）
 
@@ -93,7 +103,7 @@
 ## 📁 目录结构
 
 ```
-ai-toolbox/
+system-AI-Toolbox/
 ├── models/                        # 训练好的模型
 │   ├── intent_classifier/          # 意图分类模型（26类）
 │   └── multitool_classifier/       # 多步骤检测模型（2类）
@@ -147,14 +157,17 @@ cd worker-toolbox/frontend && npm run dev
 ## 🧪 重新训练模型
 
 ```bash
-# 训练意图分类模型
+# 训练意图分类模型（35 类）
 python3 train_intent_classifier.py
 
 # 训练多步骤检测模型
 python3 train_multitool_classifier.py
+
+# 训练情感分类模型（正面/负面/中性）
+python3 train_sentiment_classifier.py
 ```
 
-训练数据在 CSV 文件中，每行格式：`文本,标签`。添加新工具只需在 `training_data.csv` 加数据后重新训练。
+训练数据在 CSV 文件中，每行格式：`文本,标签`。添加新工具只需在对应 CSV 加数据后重新训练；训练完成后重启后端自动加载。
 
 ---
 

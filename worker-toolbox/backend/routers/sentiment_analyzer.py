@@ -1,25 +1,51 @@
-"""Sentiment Analyzer API — 情感分析（正面/负面/中性）。"""
+"""Sentiment Analyzer API — 情感分析（正面/负面/中性）。
+
+优先加载本地训练的模型（models/sentiment_classifier/，
+由 train_sentiment_classifier.py 产出）；模型不存在时回退到
+未训练的预训练模型（输出不可靠，仅保证接口可用）。
+"""
+import os
 import torch
 from fastapi import APIRouter
 from pydantic import BaseModel
 from transformers import DistilBertTokenizer, DistilBertForSequenceClassification
 
+from backend.config import config
+
 router = APIRouter(prefix="/api/sentiment", tags=["sentiment-analyzer"])
 
-MODEL_NAME = "distilbert-base-multilingual-cased"
-LABELS = ["negative", "neutral", "positive"]
+LOCAL_MODEL_PATH = os.path.join(config.models_dir, "sentiment_classifier")
+FALLBACK_MODEL_NAME = "distilbert-base-multilingual-cased"
+FALLBACK_LABELS = ["negative", "neutral", "positive"]
 
-_model = None; _tokenizer = None; _device = None
+_model = None
+_tokenizer = None
+_device = None
+LABELS = FALLBACK_LABELS
+
 
 def _load():
-    global _model, _tokenizer, _device
-    if _model is not None: return
+    global _model, _tokenizer, _device, LABELS
+    if _model is not None:
+        return
     _device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
-    _tokenizer = DistilBertTokenizer.from_pretrained(MODEL_NAME)
-    _model = DistilBertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=3)
-    _model.to(_device); _model.eval()
-    # Note: this loads untrained classification head. Train with sentiment data for better results.
-    print(f"✅ Sentiment model loaded ({_device})")
+
+    # 本地训练模型优先（labels.txt 由训练脚本自动生成）
+    labels_path = os.path.join(LOCAL_MODEL_PATH, "labels.txt")
+    if os.path.exists(labels_path):
+        with open(labels_path) as f:
+            LABELS = [l.strip() for l in f if l.strip()]
+        _tokenizer = DistilBertTokenizer.from_pretrained(LOCAL_MODEL_PATH)
+        _model = DistilBertForSequenceClassification.from_pretrained(LOCAL_MODEL_PATH)
+        print(f"✅ 情感分析模型已加载（本地训练，{len(LABELS)} 类，设备: {_device}）")
+    else:
+        # 回退：未训练的分类头，输出不可靠，仅保证接口可用
+        LABELS = FALLBACK_LABELS
+        _tokenizer = DistilBertTokenizer.from_pretrained(FALLBACK_MODEL_NAME)
+        _model = DistilBertForSequenceClassification.from_pretrained(FALLBACK_MODEL_NAME, num_labels=3)
+        print(f"⚠️ 情感分析模型未训练（回退预训练模型），建议运行 train_sentiment_classifier.py")
+    _model.to(_device)
+    _model.eval()
 
 
 class SentimentRequest(BaseModel):

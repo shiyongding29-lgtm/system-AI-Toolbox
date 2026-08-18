@@ -39,7 +39,7 @@ export default function MyRobotPage() {
         <div>
           <Title level={3} style={{ margin: 0 }}>
             <RobotOutlined style={{ color: '#00e5ff', marginRight: 8, filter: 'drop-shadow(0 0 8px rgba(0,229,255,0.5))' }} />
-            <span style={{ background: 'linear-gradient(135deg, #00e5ff, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>My Robot</span>
+            <span style={{ background: 'linear-gradient(135deg, #00e5ff, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Scheduled Agent 定時智能體（Cron 調度）</span>
           </Title>
           <Text style={{ color: '#5a6d8a', fontSize: 12 }}>Automated workflow execution</Text>
         </div>

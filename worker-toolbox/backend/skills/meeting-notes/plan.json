@@ -1,0 +1,17 @@
+{
+  "title": "会议纪要",
+  "description": "录音转写 → AI 总结 → 提取待办 → 写入待办列表",
+  "input": "paste_text_or_record_audio",
+  "reply": "好的！我来整理会议纪要：录音转写 → AI 总结 → 提取待办 → 添加到待办列表。",
+  "nodes": [
+    {"id": "n1", "tool": "meeting_recorder", "label": "录音转写"},
+    {"id": "n2", "tool": "document_summary", "label": "AI 总结"},
+    {"id": "n3", "tool": "todo_extraction", "label": "提取待办"},
+    {"id": "n4", "tool": "todo_add", "label": "添加到待办列表"}
+  ],
+  "edges": [
+    {"from": "n1", "to": "n2", "fromOutput": "transcript"},
+    {"from": "n2", "to": "n3", "fromOutput": "summary"},
+    {"from": "n3", "to": "n4", "fromOutput": "todos"}
+  ]
+}

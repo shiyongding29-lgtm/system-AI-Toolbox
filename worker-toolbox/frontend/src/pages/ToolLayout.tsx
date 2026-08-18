@@ -9,6 +9,7 @@ import {
   ThunderboltOutlined, OrderedListOutlined, FilePptOutlined, BranchesOutlined, TableOutlined,
   MenuFoldOutlined, MenuUnfoldOutlined, StarFilled, StarOutlined,
   PictureOutlined, FilePdfOutlined, SmileOutlined, SwapOutlined, RobotOutlined, QrcodeOutlined,
+  CalculatorOutlined, CloudOutlined, DollarOutlined, StockOutlined, LineChartOutlined, ExperimentOutlined, StopOutlined, AimOutlined, TeamOutlined, RadarChartOutlined,
 } from '@ant-design/icons'
 import { ErrorBoundary, LoadingSkeleton } from '../shared'
 import CommandPalette from '../shared/CommandPalette'
@@ -59,11 +60,24 @@ const FileConverterPage = LazyPage(() => import('../modules/file-converter/FileC
 const MyRobotPage = LazyPage(() => import('../modules/robot/MyRobotPage'))
 const WebScraperPage = LazyPage(() => import('../modules/web-scraper/WebScraperPage'))
 const QrGeneratorPage = LazyPage(() => import('../modules/qr-generator/QrGeneratorPage'))
+const CodeToolsPage = LazyPage(() => import('../modules/code-tools/CodeToolsPage'))
+const WeatherPage = LazyPage(() => import('../modules/weather/WeatherPage'))
+const ExchangeRatePage = LazyPage(() => import('../modules/exchange-rate/ExchangeRatePage'))
+const StockPage = LazyPage(() => import('../modules/stock/StockPage'))
+const StockPredictPage = LazyPage(() => import('../modules/stock/StockPredictPage'))
+const FruitClassifierPage = LazyPage(() => import('../modules/fruit-classifier/FruitClassifierPage'))
+const SpamClassifierPage = LazyPage(() => import('../modules/spam-classifier/SpamClassifierPage'))
+const PriorityClassifierPage = LazyPage(() => import('../modules/priority-classifier/PriorityClassifierPage'))
+const DelayRiskPage = LazyPage(() => import('../modules/delay-risk/DelayRiskPage'))
+const AttritionRiskPage = LazyPage(() => import('../modules/attrition-risk/AttritionRiskPage'))
+const AnomalyDetectorPage = LazyPage(() => import('../modules/anomaly-detector/AnomalyDetectorPage'))
+const SkillsPage = LazyPage(() => import('../modules/skills/SkillsPage'))
 
 const { Text } = Typography
 
 const MENU_ITEMS = [
-  { key: 'robot',                 label: 'My Robot 我的機器人',          icon: <RobotOutlined /> },
+  { key: 'skills',                label: 'Skills 技能',                    icon: <StarFilled /> },
+  { key: 'robot',                 label: 'Scheduled Agent 定時智能體',      icon: <RobotOutlined /> },
   { key: 'workflow',             label: 'Workflow 智能工作流',          icon: <ThunderboltOutlined /> },
   { key: 'meeting-recorder',     label: 'Meeting Notes 會議記錄',       icon: <AudioOutlined /> },
   { key: 'document-summary',     label: 'Doc Summary 文件摘要',        icon: <FileTextOutlined /> },
@@ -93,6 +107,17 @@ const MENU_ITEMS = [
   { key: 'file-converter',         label: 'File Converter 文件轉換',     icon: <SwapOutlined /> },
   { key: 'web-scraper',            label: 'Web Scraper 網頁抓取',       icon: <GlobalOutlined /> },
   { key: 'qr-generator',           label: 'QR Generator 二維碼',        icon: <QrcodeOutlined /> },
+  { key: 'code-tools',             label: 'Smart Tools 智能小工具',     icon: <CalculatorOutlined /> },
+  { key: 'weather',                 label: 'Weather 天氣查詢',          icon: <CloudOutlined /> },
+  { key: 'exchange-rate',           label: 'Exchange Rate 匯率查詢',    icon: <DollarOutlined /> },
+  { key: 'stock',                   label: 'Stock Quote 股價查詢',      icon: <StockOutlined /> },
+  { key: 'stock-predictor',         label: 'Stock Predict 股票預測',     icon: <LineChartOutlined /> },
+  { key: 'fruit-classifier',        label: 'Fruit Classify 水果識別',    icon: <ExperimentOutlined /> },
+  { key: 'spam-classifier',         label: 'Spam Detect 垃圾郵件檢測',   icon: <StopOutlined /> },
+  { key: 'priority-classifier',     label: 'Task Priority 任務優先級',   icon: <AimOutlined /> },
+  { key: 'delay-risk',              label: 'Delay Risk 延期風險檢測',    icon: <ClockCircleOutlined /> },
+  { key: 'attrition-risk',          label: 'Attrition Risk 離職風險',    icon: <TeamOutlined /> },
+  { key: 'anomaly-detector',        label: 'Anomaly Detect 異常識別',    icon: <RadarChartOutlined /> },
 ]
 
 const PAGE_MAP: Record<string, React.ComponentType> = {
@@ -117,6 +142,18 @@ const PAGE_MAP: Record<string, React.ComponentType> = {
   'file-converter': FileConverterPage,
   'web-scraper': WebScraperPage,
   'qr-generator': QrGeneratorPage,
+  'code-tools': CodeToolsPage,
+  'weather': WeatherPage,
+  'exchange-rate': ExchangeRatePage,
+  'stock': StockPage,
+  'stock-predictor': StockPredictPage,
+  'fruit-classifier': FruitClassifierPage,
+  'spam-classifier': SpamClassifierPage,
+  'priority-classifier': PriorityClassifierPage,
+  'delay-risk': DelayRiskPage,
+  'attrition-risk': AttritionRiskPage,
+  'anomaly-detector': AnomalyDetectorPage,
+  'skills': SkillsPage,
 }
 
 const FAVORITES_KEY = 'toolbox-favorites'

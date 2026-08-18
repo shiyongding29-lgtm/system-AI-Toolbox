@@ -42,6 +42,21 @@ class Config:
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "BAAI/bge-large-zh-v1.5")
     rag_top_k: int = int(os.getenv("RAG_TOP_K", "5"))
 
+    # ── Agent ──
+    agent_data_dir: str = field(default_factory=lambda: os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "data"
+    ))
+    plan_cache_threshold: float = float(os.getenv("PLAN_CACHE_THRESHOLD", "0.90"))
+    agent_max_llm_calls: int = int(os.getenv("AGENT_MAX_LLM_CALLS", "3"))
+    # ── Skills ──
+    skills_dir: str = field(default_factory=lambda: os.getenv(
+        "SKILLS_DIR", os.path.join(os.path.dirname(os.path.abspath(__file__)), "skills")))
+    skill_match_threshold: float = float(os.getenv("SKILL_MATCH_THRESHOLD", "0.72"))
+    # 外部数据工具 API key（均可选；天气/汇率有免 key 通道）
+    weather_api_key: str = os.getenv("WEATHER_API_KEY", "")
+    exchange_api_key: str = os.getenv("EXCHANGE_API_KEY", "")
+    stock_api_key: str = os.getenv("STOCK_API_KEY", "")
+
 
 # 全局单例
 config = Config()

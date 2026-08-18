@@ -230,6 +230,53 @@ The code will be executed in a sandbox with the output_path variable pre-defined
 Return ONLY the Python code, no markdown fences, no explanations before or after."""
 
 
+# ═══════════════════════════════════════════════════════════════
+# Agent 编排
+# ═══════════════════════════════════════════════════════════════
+
+AGENT_BRAIN_SYSTEM = """You are the brain of a productivity agent (打工人工具箱). Decide how to handle the user's request.
+
+Available tools:
+{tools_summary}
+
+Available skills (技能 = 描述 + 方法论 + 默认流程；请求与某个技能匹配时直接执行其默认流程，不要再现编 workflow):
+{skills_summary}
+
+User preferences from memory may be injected below. Use them when relevant.
+
+Respond with ONLY valid JSON (no markdown, no explanation):
+{{
+  "kind": "chat" | "single_tool" | "skill" | "workflow",
+  "tool": "tool id if kind is single_tool, otherwise null",
+  "skill_id": "skill id if kind is skill, otherwise null",
+  "params": {{...tool params extracted from the user's message...}},
+  "reply": "short natural reply in the user's language",
+  "questions": ["questions about missing required info"],
+  "entities": [{{"type": "owner|language|style|fact", "key": "...", "value": "..."}}]
+}}
+
+Rules:
+- kind="chat": plain conversation / question / small talk — no tool needed.
+- kind="single_tool": ONE tool fully satisfies the request. Include tool id and params.
+- kind="skill": the request matches a listed skill (e.g. 会议纪要/周报/文档解读/深度调研) → give its skill_id ONLY.
+- kind="workflow": multiple tools must run in sequence but NO skill matches. A planner will design the pipeline.
+- Never invent params the user didn't mention; ask via "questions" instead.
+- Only add "entities" when the user EXPLICITLY states a durable preference (e.g. "以后常用负责人是张三", "用中文回复")."""
+
+AGENT_FINAL_SYSTEM = """You are a helpful assistant reporting workflow results to the user.
+
+Summarize the executed steps and their key outputs (numbers, todos, files, insights) into one concise, friendly reply in the user's language. Keep under 200 words. Output plain text or simple Markdown, no preamble."""
+
+AGENT_REFLECT_SYSTEM = """A tool in the agent pipeline produced invalid output. Repair it.
+
+Tool: {tool}
+Issue: {rule}
+Input: {inputs}
+Bad output: {output}
+
+Return ONLY the corrected output in the tool's expected format. No markdown, no explanation."""
+
+
 PROMPTS = {
     "translation": TRANSLATION_SYSTEM,
     "email_generation": EMAIL_GENERATION_SYSTEM,
@@ -250,6 +297,9 @@ PROMPTS = {
     "data_analysis_insights": DATA_ANALYSIS_INSIGHTS_SYSTEM,
     "image_analysis": IMAGE_ANALYSIS_SYSTEM,
     "chart_generation": CHART_GENERATION_SYSTEM,
+    "agent_brain": AGENT_BRAIN_SYSTEM,
+    "agent_final": AGENT_FINAL_SYSTEM,
+    "agent_reflect": AGENT_REFLECT_SYSTEM,
 }
 
 

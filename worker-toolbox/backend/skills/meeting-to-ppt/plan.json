@@ -1,0 +1,15 @@
+{
+  "title": "会议转PPT",
+  "description": "录音转写 → AI 总结 → 生成 PPT 大纲",
+  "input": "paste_text_or_record_audio",
+  "reply": "好的！我来把会议整理成 PPT 大纲：转写 → 总结 → 大纲。",
+  "nodes": [
+    {"id": "n1", "tool": "meeting_recorder", "label": "录音转写"},
+    {"id": "n2", "tool": "document_summary", "label": "AI 总结"},
+    {"id": "n3", "tool": "ppt_outline", "label": "生成 PPT 大纲"}
+  ],
+  "edges": [
+    {"from": "n1", "to": "n2", "fromOutput": "transcript"},
+    {"from": "n2", "to": "n3", "fromOutput": "summary"}
+  ]
+}

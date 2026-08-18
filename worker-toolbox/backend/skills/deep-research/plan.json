@@ -1,0 +1,15 @@
+{
+  "title": "深度调研",
+  "description": "网络搜索 → 生成报告 → 思维导图 → 提取行动点",
+  "input": "paste_text",
+  "reply": "好的！开始深度调研：搜索 → 分析 → 报告 → 行动点。",
+  "nodes": [
+    {"id": "n1", "tool": "deep_research", "label": "调研报告"},
+    {"id": "n2", "tool": "mindmap", "label": "思维导图"},
+    {"id": "n3", "tool": "todo_extraction", "label": "提取行动点"}
+  ],
+  "edges": [
+    {"from": "n1", "to": "n2", "fromOutput": "report"},
+    {"from": "n2", "to": "n3", "fromOutput": "markdown"}
+  ]
+}

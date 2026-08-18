@@ -223,6 +223,13 @@ async def status_system_recording():
 @router.post("/summarize")
 async def meeting_summarize(req: SummarizeRequest, db: Session = Depends(get_db)):
     """对转写稿生成会议纪要，并更新已有 MeetingRecord 的 summary 字段。"""
+    summary = llm_service.complete(MEETING_SUMMARY_SYSTEM, req.transcript)
+    history_id = save_history(
+        db, "meeting-recorder",
+        f"会议记录: {req.transcript[:50]}",
+        req.transcript[:500], summary,
+    )
+
     meeting_id = req.meeting_id
     if meeting_id:
         meeting = db.query(MeetingRecord).filter(MeetingRecord.id == meeting_id).first()
@@ -230,12 +237,6 @@ async def meeting_summarize(req: SummarizeRequest, db: Session = Depends(get_db)
             meeting.summary = summary
             meeting.history_id = history_id
             db.commit()
-    summary = llm_service.complete(MEETING_SUMMARY_SYSTEM, req.transcript)
-    history_id = save_history(
-        db, "meeting-recorder",
-        f"会议记录: {req.transcript[:50]}",
-        req.transcript[:500], summary,
-    )
 
     # 同时自动提取待办事项
     from backend.services.prompt_library import TODO_EXTRACTION_SYSTEM

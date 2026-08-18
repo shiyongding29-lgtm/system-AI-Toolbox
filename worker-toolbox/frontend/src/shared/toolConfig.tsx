@@ -20,7 +20,17 @@ export const TOOL_LABELS: Record<string, string> = {
   'image-analyzer': 'Image Analyzer 圖片分析', 'chart-generator': 'Chart Generator 圖表生成',
   'table-generator': 'Table Generator 表格生成', 'pdf-toolkit': 'PDF Toolkit PDF工具', 'sentiment-analyzer': 'Sentiment 情感分析',
   'file-converter': 'File Converter 文件轉換', 'web-scraper': 'Web Scraper 網頁抓取', 'qr-generator': 'QR Generator 二維碼',
-  'workflow': 'AI Workflow 智能工作流', 'robot': 'My Robot 我的機器人',
+  'workflow': 'AI Workflow 智能工作流', 'robot': 'Scheduled Agent 定時智能體',
+  'code-tools': 'Smart Tools 智能小工具', 'weather': 'Weather 天氣查詢',
+  'exchange-rate': 'Exchange Rate 匯率查詢', 'stock': 'Stock Quote 股價查詢',
+  'stock-predictor': 'Stock Predict 股票預測',
+  'fruit-classifier': 'Fruit Classify 水果識別',
+  'spam-classifier': 'Spam Detect 垃圾郵件檢測',
+  'priority-classifier': 'Task Priority 任務優先級',
+  'delay-risk': 'Delay Risk 延期風險檢測',
+  'attrition-risk': 'Attrition Risk 離職風險預測',
+  'anomaly-detector': 'Anomaly Detect 異常員工識別',
+  'skills': 'Skills 技能库',
 }
 
 export const TOOL_COLORS: Record<string, string> = {
@@ -34,4 +44,13 @@ export const TOOL_COLORS: Record<string, string> = {
   'table-generator': '#3b82f6', 'pdf-toolkit': '#ef4444', 'sentiment-analyzer': '#8b5cf6',
   'file-converter': '#6366f1', 'web-scraper': '#f97316', 'qr-generator': '#6366f1',
   'workflow': '#00e5ff', 'robot': '#7c3aed',
+  'code-tools': '#22c55e', 'weather': '#06b6d4', 'exchange-rate': '#14b8a6', 'stock': '#ef4444',
+  'stock-predictor': '#f97316',
+  'fruit-classifier': '#22c55e',
+  'spam-classifier': '#ef4444',
+  'priority-classifier': '#8b5cf6',
+  'delay-risk': '#f97316',
+  'attrition-risk': '#14b8a6',
+  'anomaly-detector': '#f59e0b',
+  'skills': '#00e5ff',
 }

@@ -1,0 +1,15 @@
+{
+  "title": "文档解读",
+  "description": "AI 摘要 → 思维导图 → 提取待办",
+  "input": "paste_text",
+  "reply": "好的！我来解读这份文档：摘要 → 思维导图 → 提取待办。",
+  "nodes": [
+    {"id": "n1", "tool": "document_summary", "label": "AI 摘要"},
+    {"id": "n2", "tool": "mindmap", "label": "思维导图"},
+    {"id": "n3", "tool": "todo_extraction", "label": "提取待办"}
+  ],
+  "edges": [
+    {"from": "n1", "to": "n2", "fromOutput": "summary"},
+    {"from": "n2", "to": "n3", "fromOutput": "markdown"}
+  ]
+}

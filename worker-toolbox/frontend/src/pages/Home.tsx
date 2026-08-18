@@ -8,6 +8,7 @@ import {
   ScheduleOutlined, ReadOutlined, FilePptOutlined, ClockCircleOutlined,
   DeleteOutlined, ReloadOutlined, BranchesOutlined, TableOutlined,
   FilterOutlined, ThunderboltOutlined, FireOutlined, CheckCircleOutlined, StarFilled, StarOutlined, PictureOutlined, FilePdfOutlined, SmileOutlined, SwapOutlined, RobotOutlined, QrcodeOutlined,
+  CalculatorOutlined, CloudOutlined, DollarOutlined, StockOutlined, LineChartOutlined, ExperimentOutlined, StopOutlined, AimOutlined, TeamOutlined, RadarChartOutlined,
 } from '@ant-design/icons'
 import http from '../services/http'
 import { TOOL_LABELS, TOOL_COLORS } from '../shared'
@@ -17,9 +18,14 @@ const { Title, Text } = Typography
 
 const TOOL_CATEGORIES = [
   {
+    name: '🎯 Skills 技能', tools: [
+      { key: 'skills', title: 'Skills', sub: '技能庫', icon: <StarFilled />, color: '#00e5ff' },
+    ]
+  },
+  {
     name: 'Workflow', icon: '🔀', tools: [
       { key: 'workflow', title: 'AI Workflow', sub: '智能工作流', icon: <ThunderboltOutlined />, color: '#00e5ff' },
-      { key: 'robot', title: 'My Robot', sub: '我的機器人', icon: <RobotOutlined />, color: '#7c3aed' },
+      { key: 'robot', title: 'Scheduled Agent', sub: '定時智能體 · Cron 調度', icon: <RobotOutlined />, color: '#7c3aed' },
     ]
   },
   {
@@ -65,6 +71,21 @@ const TOOL_CATEGORIES = [
     name: '⏰ 自動化與效率', tools: [
       { key: 'task-planning', title: 'Task Planner', sub: '任務規劃', icon: <ScheduleOutlined />, color: '#e11d48' },
       { key: 'pomodoro', title: 'Pomodoro', sub: '番茄鐘', icon: <ClockCircleOutlined />, color: '#f43f5e' },
+    ]
+  },
+  {
+    name: '🔧 智能小工具', tools: [
+      { key: 'code-tools', title: 'Smart Tools', sub: '計算/日期/換算', icon: <CalculatorOutlined />, color: '#22c55e' },
+      { key: 'weather', title: 'Weather', sub: '天氣查詢', icon: <CloudOutlined />, color: '#06b6d4' },
+      { key: 'exchange-rate', title: 'Exchange', sub: '匯率查詢', icon: <DollarOutlined />, color: '#14b8a6' },
+      { key: 'stock', title: 'Stock', sub: '股價查詢', icon: <StockOutlined />, color: '#ef4444' },
+      { key: 'stock-predictor', title: 'Stock Predict', sub: '股票預測', icon: <LineChartOutlined />, color: '#f97316' },
+      { key: 'fruit-classifier', title: 'Fruit Classify', sub: '水果識別', icon: <ExperimentOutlined />, color: '#22c55e' },
+      { key: 'spam-classifier', title: 'Spam Detect', sub: '垃圾郵件檢測', icon: <StopOutlined />, color: '#ef4444' },
+      { key: 'priority-classifier', title: 'Task Priority', sub: '任務優先級', icon: <AimOutlined />, color: '#8b5cf6' },
+      { key: 'delay-risk', title: 'Delay Risk', sub: '延期風險檢測', icon: <ClockCircleOutlined />, color: '#f97316' },
+      { key: 'attrition-risk', title: 'Attrition Risk', sub: '離職風險預測', icon: <TeamOutlined />, color: '#14b8a6' },
+      { key: 'anomaly-detector', title: 'Anomaly Detect', sub: '異常員工識別', icon: <RadarChartOutlined />, color: '#f59e0b' },
     ]
   },
 ]
@@ -264,10 +285,10 @@ function Home({ themeMode, onToggleTheme }: { themeMode: 'light' | 'dark'; onTog
       <Row gutter={24}>
         {/* Left column */}
         <Col xs={24} lg={15}>
-          {/* My Robot section */}
+          {/* Scheduled Agent section */}
           {robots.length > 0 && (
             <Card size="small"
-              title={<span style={{ color: '#00e5ff' }}>🤖 My Robot</span>}
+              title={<span style={{ color: '#00e5ff' }}>🤖 Scheduled Agent 定時智能體（Cron 調度）</span>}
               style={{
                 borderRadius: 16, marginBottom: 20, border: '1px solid rgba(0,229,255,0.3)',
                 background: 'linear-gradient(135deg, rgba(0,229,255,0.06), rgba(124,58,237,0.05), rgba(0,229,255,0.02))',

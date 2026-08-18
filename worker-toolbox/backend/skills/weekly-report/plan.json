@@ -1,0 +1,10 @@
+{
+  "title": "周报生成",
+  "description": "根据工作要点生成结构化周报",
+  "input": "paste_text",
+  "reply": "好的！我来把工作要点整理成周报。",
+  "nodes": [
+    {"id": "n1", "tool": "weekly_report", "label": "生成周报"}
+  ],
+  "edges": []
+}

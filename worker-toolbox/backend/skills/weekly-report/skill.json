@@ -1,0 +1,26 @@
+{
+  "id": "weekly-report",
+  "name": "周报",
+  "description": "把本周工作要点整理成结构化周报（完成事项/下周计划/风险）",
+  "icon": "📋",
+  "color": "#f59e0b",
+  "version": "1.0.0",
+  "builtin": true,
+  "aliases": [
+    "周报",
+    "周总结",
+    "weekly report",
+    "写周报",
+    "工作周报"
+  ],
+  "input_hint": "粘贴本周工作要点（一句话一条），AI 自动整理成周报",
+  "tags": [
+    "周报",
+    "汇报"
+  ],
+  "triggers": [
+    "周报",
+    "周总结",
+    "周工作汇报"
+  ]
+}

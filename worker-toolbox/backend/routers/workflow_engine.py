@@ -19,6 +19,9 @@ from backend.services.prompt_library import (
     DEEP_RESEARCH_REPORT_SYSTEM,
     DEEP_RESEARCH_PLAN_SYSTEM, DEEP_RESEARCH_ANALYZE_SYSTEM,
 )
+from backend.services.toolkit.code_tools import (
+    safe_calc, date_calc, unit_convert, word_count, json_format,
+)
 
 MINDMAP_SYSTEM = """You are an expert knowledge organizer. Convert the user's input into a hierarchical mind map structure in Markdown format.
 
@@ -294,18 +297,96 @@ def _exec_sentiment_analyzer(inputs: dict) -> dict:
     text = inputs.get("text", "")
     if not text: return {"sentiment": "neutral", "confidence": 0, "scores": {}}
     try:
-        from backend.routers.sentiment_analyzer import _load, _tokenizer, _model, _device, LABELS
-        _load()
+        # 模块属性访问：LABELS 在 _load() 时按 labels.txt 重绑定
+        from backend.routers import sentiment_analyzer as sa
+        sa._load()
         import torch
-        inputs_t = _tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=128)
-        inputs_t = {k: v.to(_device) for k, v in inputs_t.items()}
+        inputs_t = sa._tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=128)
+        inputs_t = {k: v.to(sa._device) for k, v in inputs_t.items()}
         with torch.no_grad():
-            scores = torch.softmax(_model(**inputs_t).logits, dim=-1)[0]
+            scores = torch.softmax(sa._model(**inputs_t).logits, dim=-1)[0]
             pred = torch.argmax(scores).item()
-        return {"sentiment": LABELS[pred], "confidence": round(scores[pred].item(), 4),
-                "scores": {LABELS[i]: round(scores[i].item(), 4) for i in range(3)}}
+        return {"sentiment": sa.LABELS[pred], "confidence": round(scores[pred].item(), 4),
+                "scores": {sa.LABELS[i]: round(scores[i].item(), 4) for i in range(len(sa.LABELS))}}
     except Exception as e:
         return {"sentiment": "neutral", "confidence": 0, "scores": {}, "error": str(e)[:100]}
+
+
+def _exec_weather(inputs: dict) -> dict:
+    """Workflow executor: 天气查询。"""
+    from backend.services.toolkit.external_api import weather
+    city = inputs.get("city", "").strip() or inputs.get("text", "").strip()
+    return weather(city)
+
+
+def _exec_exchange_rate(inputs: dict) -> dict:
+    """Workflow executor: 汇率查询（参数或文本中提取货币对，支持中文货币名）。"""
+    from backend.services.toolkit.external_api import exchange_rate, _CN_CURRENCY
+    base = inputs.get("base", "").strip()
+    target = inputs.get("target", "").strip()
+    text = inputs.get("text", "")
+    if not base or not target:
+        m = re.search(r'([A-Za-z]{3})\s*(?:兑|換|换|转|to|→|->|对)\s*([A-Za-z]{3})', text, re.I)
+        if m:
+            base, target = m.group(1), m.group(2)
+        else:
+            # 中文货币名：取前两个出现的货币
+            found = []
+            for cn, code in _CN_CURRENCY.items():
+                if cn in text:
+                    found.append(code)
+            if len(found) >= 2:
+                base, target = found[0], found[1]
+    return exchange_rate(base, target)
+
+
+def _exec_stock_quote(inputs: dict) -> dict:
+    """Workflow executor: 股价查询。"""
+    from backend.services.toolkit.external_api import stock_quote
+    symbol = inputs.get("symbol", "").strip() or inputs.get("text", "").strip()
+    return stock_quote(symbol)
+
+
+def _exec_stock_predictor(inputs: dict) -> dict:
+    """Workflow executor: sklearn 股票预测。"""
+    from backend.services.stock_predictor_service import predict
+    return predict(inputs)
+
+
+def _exec_fruit_classifier(inputs: dict) -> dict:
+    """Workflow executor: KNN 水果识别。"""
+    from backend.services.fruit_classifier_service import predict
+    return predict(inputs)
+
+
+def _exec_spam_classifier(inputs: dict) -> dict:
+    """Workflow executor: 随机森林垃圾邮件分类。"""
+    from backend.services.spam_classifier_service import predict
+    return predict(inputs.get("text", ""))
+
+
+def _exec_priority_classifier(inputs: dict) -> dict:
+    """Workflow executor: 决策树任务优先级。"""
+    from backend.services.priority_classifier_service import predict
+    return predict(inputs)
+
+
+def _exec_delay_risk(inputs: dict) -> dict:
+    """Workflow executor: 梯度提升树延期风险检测。"""
+    from backend.services.delay_risk_service import predict
+    return predict(inputs)
+
+
+def _exec_attrition_risk(inputs: dict) -> dict:
+    """Workflow executor: SVM 离职风险预测。"""
+    from backend.services.attrition_service import predict
+    return predict(inputs)
+
+
+def _exec_anomaly_detector(inputs: dict) -> dict:
+    """Workflow executor: K-Means 异常员工识别。"""
+    from backend.services.anomaly_service import predict
+    return predict(inputs)
 
 
 EXECUTORS: dict[str, Callable] = {
@@ -328,6 +409,24 @@ EXECUTORS: dict[str, Callable] = {
     "table_generator": _exec_table_generator,
     "pdf_toolkit": _exec_pdf_toolkit,
     "sentiment_analyzer": _exec_sentiment_analyzer,
+    # ── 零 LLM 代码工具 ──
+    "calculator": lambda inputs: safe_calc(inputs.get("text", inputs.get("expression", ""))),
+    "date_calc": lambda inputs: date_calc(inputs.get("text", "")),
+    "unit_converter": lambda inputs: unit_convert(inputs.get("text", "")),
+    "word_counter": lambda inputs: word_count(inputs.get("text", "")),
+    "json_formatter": lambda inputs: json_format(inputs.get("text", "")),
+    # ── 外部数据工具 ──
+    "weather": _exec_weather,
+    "exchange_rate": _exec_exchange_rate,
+    "stock_quote": _exec_stock_quote,
+    # ── ML 工具 ──
+    "stock_predictor": _exec_stock_predictor,
+    "fruit_classifier": _exec_fruit_classifier,
+    "spam_classifier": _exec_spam_classifier,
+    "priority_classifier": _exec_priority_classifier,
+    "delay_risk": _exec_delay_risk,
+    "attrition_risk": _exec_attrition_risk,
+    "anomaly_detector": _exec_anomaly_detector,
 }
 
 # ── JSON 解析 ──
@@ -566,3 +665,27 @@ def run_workflow(plan: dict, user_input: dict) -> str:
 def get_workflow_status(workflow_id: str) -> dict | None:
     with _wf_lock:
         return _workflows.get(workflow_id)
+
+
+def plan_workflow_cached(user_text: str) -> dict:
+    """优先复用历史 plan（0 LLM），未命中再 LLM 规划。
+
+    返回 plan 字典，额外附 'source'（plan_cache_exact|plan_cache|llm）
+    与 'llm_calls' 字段；失败时含 'error' 键（与 plan_workflow 一致）。
+    """
+    try:
+        from backend.services.plan_cache import plan_cache
+        hit = plan_cache.search(user_text)
+        if hit:
+            plan = dict(hit["plan"])
+            plan["source"] = hit.get("source", "plan_cache")
+            plan["plan_cache_score"] = hit.get("score")
+            plan["llm_calls"] = 0
+            return plan
+    except Exception:
+        logger.exception("计划缓存查询失败，回退 LLM 规划")
+
+    plan = plan_workflow(user_text)
+    plan["source"] = "llm"
+    plan["llm_calls"] = 1
+    return plan

@@ -1,0 +1,28 @@
+{
+  "id": "meeting-to-ppt",
+  "name": "会议转PPT",
+  "description": "把会议内容整理成 PPT 大纲（可下载 PPTX / HTML 演示文稿）",
+  "icon": "📽️",
+  "color": "#ef4444",
+  "version": "1.0.0",
+  "builtin": true,
+  "aliases": [
+    "会议转PPT",
+    "会议ppt",
+    "会议简报",
+    "meeting to ppt",
+    "做成PPT"
+  ],
+  "input_hint": "点击「开始录音」录制会议，或粘贴会议记录文本",
+  "tags": [
+    "会议",
+    "PPT",
+    "演示"
+  ],
+  "triggers": [
+    "会议转",
+    "做成ppt",
+    "会议ppt",
+    "会议简报"
+  ]
+}
