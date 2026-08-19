@@ -142,6 +142,7 @@ def unit_convert(text: str) -> dict:
     value = float(m.group(1))
     src = m.group(2).strip()
     dst = m.group(3).strip()
+    dst = re.sub(r'^多少', '', dst).strip()  # 去掉「等于多少英里」里的「多少」前缀
 
     # 温度特判
     if "温" in src or "温" in dst or (src in ("摄氏度", "华氏度", "开尔文") or dst in ("摄氏度", "华氏度", "开尔文")):

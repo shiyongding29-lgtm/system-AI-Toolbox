@@ -97,7 +97,11 @@ async def delete_robot(robot_id: str):
 async def robot_history(robot_id: str):
     """获取 Robot 执行历史。"""
     return {"code": 0, "msg": "ok", "data": _history.get(robot_id, [])}
+
+
+@router.post("/{robot_id}/toggle")
 async def toggle_robot(robot_id: str):
+    """启用/停用 Robot。"""
     if robot_id not in _robots:
         return {"code": 404, "msg": "Not found"}
     _robots[robot_id]['enabled'] = not _robots[robot_id].get('enabled', True)
