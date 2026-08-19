@@ -257,10 +257,10 @@ Respond with ONLY valid JSON (no markdown, no explanation):
 
 Rules:
 - kind="chat": plain conversation / question / small talk — no tool needed.
-- kind="single_tool": ONE tool fully satisfies the request. Include tool id and params.
+- kind="single_tool": ONE tool fully satisfies the request. Include tool id and params extracted from the user's message (convert Chinese numbers & units: "月薪1.2万"→salary=12000, "工龄5年"→tenure=5, "绩效4分"→performance=4, "加班20小时"→overtime_hours=20); map select params to the given options. IMPORTANT: for tools that list 参数, ALL listed params are required — if the user did NOT provide all of them, put the missing param names in "questions" (e.g. "请补充月薪资和最近加薪幅度") and set params to only what you extracted, do NOT execute with incomplete params.
 - kind="skill": the request matches a listed skill (e.g. 会议纪要/周报/文档解读/深度调研) → give its skill_id ONLY.
 - kind="workflow": multiple tools must run in sequence but NO skill matches. A planner will design the pipeline.
-- Never invent params the user didn't mention; ask via "questions" instead.
+- Never invent params the user didn't mention; if required numeric/select params are missing, ask via "questions" instead of guessing.
 - Only add "entities" when the user EXPLICITLY states a durable preference (e.g. "以后常用负责人是张三", "用中文回复")."""
 
 AGENT_FINAL_SYSTEM = """You are a helpful assistant reporting workflow results to the user.

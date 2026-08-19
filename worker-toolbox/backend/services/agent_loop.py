@@ -70,6 +70,23 @@ TOOL_LABELS = {
     "web-scraper": "🕷️ 网页抓取", "qr-generator": "📱 QR码",
 }
 
+
+def _tool_summary_line(t: dict) -> str:
+    """生成工具摘要，含 config_schema 参数定义（供大脑提取数值参数）。"""
+    line = f'- {t["id"]}: {t["name"]} — {t["description"]}'
+    schema = t.get("config_schema") or []
+    if schema:
+        parts = []
+        for s in schema:
+            if s.get("type") == "select":
+                opts = "/".join(str(o.get("value", "")) for o in s.get("options", []))
+                parts.append(f'{s["key"]}({s.get("label", "")}: {opts})')
+            else:
+                parts.append(f'{s["key"]}({s.get("label", "")})')
+        line += "；参数: " + ", ".join(parts)
+    return line
+
+
 # 记住类规则（0 LLM 实体抽取）
 ENTITY_PATTERNS = [
     (re.compile(r'记住[：:]?\s*[「"“]?(?:我的)?(常用)?(负责人|老板|经理|上级|联系人)[」"”]?\s*(?:是|为)\s*[「"“]?([^\s，。！？,]{1,20})'),
@@ -276,9 +293,7 @@ class AgentLoop:
 
         context = memory_service.recent_messages(session_id, limit=6)
         ctx_text = "\n".join(f"{m['role']}: {m['content'][:200]}" for m in context) if context else "(无)"
-        tools_summary = "\n".join(
-            f'- {t["id"]}: {t["name"]} — {t["description"]}' for t in TOOLS_BY_ID.values()
-        )
+        tools_summary = "\n".join(_tool_summary_line(t) for t in TOOLS_BY_ID.values())
         from backend.services.skill_registry import skill_registry
         skills_summary = skill_registry.skills_summary_text()
         brain_prompt = AGENT_BRAIN_SYSTEM.format(tools_summary=tools_summary, skills_summary=skills_summary)
@@ -371,6 +386,7 @@ class AgentLoop:
                 "single_tool": True, "tool_id": tool_id, "params": params,
                 "reply": reply, "source": "brain_llm", "llm_calls": 1,
                 "prompt_md": knowledge_prompt,
+                "questions": decision.get("questions") or [],
             }
 
         if kind == "workflow":

@@ -16,6 +16,10 @@ from backend.services.intent_classifier_service import predict as local_predict
 
 logger = logging.getLogger(__name__)
 
+# 需要结构化数值参数的 ML 工具：快路径不直达，交由 Agent 大脑（LLM）从自然语言提取数值
+ML_PARAM_TOOLS = {"fruit_classifier", "spam_classifier", "priority_classifier",
+                  "delay_risk", "attrition_risk", "anomaly_detector", "stock_predictor"}
+
 
 def keyword_route(text: str) -> dict | None:
     """新工具关键词直达（0 LLM）。返回 parse-intent 同构 dict 或 None。"""
@@ -47,33 +51,34 @@ def keyword_route(text: str) -> dict | None:
     if re.search(r'(汇率|兑换|换算成|兑)', t) and re.search(r'([A-Za-z]{3}|美元|人民币|欧元|日元|英镑|港币|韩元|澳元|加元|卢布)', t):
         return {"tool": "exchange_rate", "params": {"text": t}, "reply": "💱 帮你查汇率", "source": "keyword"}
 
+    # ── ML 工具：需要结构化数值参数，快路径只拦截不直达，交由 Agent 大脑（LLM）提取数值 ──
     # 异常员工识别
     if re.search(r'(异常|离群|反常).{0,4}(员工|行为|样本)|识别.{0,2}异常|异常检测', t):
-        return {"tool": "anomaly_detector", "params": {"text": t}, "reply": "🔍 帮你识别异常员工", "source": "keyword"}
+        return None
 
     # 离职风险预测
     if re.search(r'(离职|跳槽|流失).{0,4}(风险|预测|概率)|员工.{0,4}(会不会|是否).{0,2}离职', t):
-        return {"tool": "attrition_risk", "params": {"text": t}, "reply": "👋 帮你预测员工离职风险", "source": "keyword"}
+        return None
 
     # 延期风险检测
     if re.search(r'(延期|拖延).{0,4}(风险|检测|预测|评估)|(项目|任務).{0,4}(会|会不会|是否).{0,2}延期', t):
-        return {"tool": "delay_risk", "params": {"text": t}, "reply": "⏰ 帮你评估项目延期风险", "source": "keyword"}
+        return None
 
     # 任务优先级判断
     if re.search(r'(任务|事项).{0,4}(优先级|优先)|(优先级|优先).{0,4}(判断|排序|评估)', t):
-        return {"tool": "priority_classifier", "params": {"text": t}, "reply": "🎯 帮你判断任务优先级", "source": "keyword"}
+        return None
 
     # 垃圾邮件检测
     if re.search(r'(判断|检测|识别|是不是).{0,4}(垃圾邮件|垃圾短信|骚扰)', t) or re.search(r'(垃圾邮件|垃圾短信).{0,4}(判断|检测|识别)', t):
-        return {"tool": "spam_classifier", "params": {"text": t}, "reply": "🚫 帮你检测垃圾邮件", "source": "keyword"}
+        return None
 
     # 水果识别
     if re.search(r'(识别|这是什么|分类).{0,4}(水果)', t) or re.search(r'(水果).{0,4}(识别|分类)', t):
-        return {"tool": "fruit_classifier", "params": {"text": t}, "reply": "🍎 帮你识别水果", "source": "keyword"}
+        return None
 
     # 股票预测（放在股价查询之前，避免「预测股价」被 stock_quote 拦截）
     if re.search(r'(预测|预估).{0,4}(股价|股票|涨跌|明天|次日)', t) or re.search(r'(明天|次日).{0,3}(涨|跌)', t):
-        return {"tool": "stock_predictor", "params": {"text": t}, "reply": "📉 帮你预测股票走势", "source": "keyword"}
+        return None
 
     # 股价
     if re.search(r'(股价|股票|行情|市值|美股|港股)', t):
@@ -199,6 +204,10 @@ def route_single(text: str) -> dict | None:
 
     # 聊天类（训练数据含 chat 类）不跳工具，交给 Agent 大脑
     if intent == 'chat':
+        return None
+
+    # ML 工具需要结构化数值参数提取，交给 Agent 大脑（LLM）处理
+    if intent in ML_PARAM_TOOLS:
         return None
 
     # ── 正则提取参数（不依赖 LLM，瞬间完成）──

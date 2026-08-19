@@ -36,6 +36,14 @@ TOOL_MAP = {
     'todo_add': 'todo-add',
     'web_scraper': 'web-scraper',
     'qr_generator': 'qr-generator',
+    # ML 工具（结构化数值参数，走 Agent 大脑提参）
+    'fruit_classifier': 'fruit-classifier',
+    'spam_classifier': 'spam-classifier',
+    'priority_classifier': 'priority-classifier',
+    'delay_risk': 'delay-risk',
+    'attrition_risk': 'attrition-risk',
+    'anomaly_detector': 'anomaly-detector',
+    'stock_predictor': 'stock',
 }
 
 _MODEL = None

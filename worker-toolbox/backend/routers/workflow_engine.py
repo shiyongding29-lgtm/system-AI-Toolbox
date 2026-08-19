@@ -531,6 +531,9 @@ def _exec_workflow(workflow_id: str, nodes: list[dict], edges: list[dict], user_
                 if not executor:
                     return (nid, {"error": f"Unknown tool: {tool_id}"}, False)
                 resolved_inputs = _resolve_inputs(nid, edges, node_results, user_input)
+                # 合并 node 自身的 config 字段（ML 工具的数值参数等）
+                if node.get("config"):
+                    resolved_inputs = {**resolved_inputs, **node["config"]}
                 try:
                     result = executor(resolved_inputs)
                     return (nid, result, True)
